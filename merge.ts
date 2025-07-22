@@ -2,7 +2,7 @@ import { summary_file } from './config'
 import { readCSV, writeCSV } from './fs'
 
 /**
- * Example Input Content:
+ * Example Input Content (from res/summary.csv):
  * ```
  * Task,Total Hour
  * media-search,1.0
@@ -10,7 +10,7 @@ import { readCSV, writeCSV } from './fs'
  * format-html-cli,0.2
  * ```
  *
- * Example Output Content:
+ * Example Output Content (to res/summary.csv):
  * ```
  * Task,Total Hour
  * media-search,1.5

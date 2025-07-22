@@ -2,7 +2,7 @@ import { readCSV, writeCSV } from './fs'
 import { summary_file, log_sheet_file } from './config'
 
 /**
- * Example Input Content:
+ * Example Input Content (from res/log-sheet.csv):
  * ```
  * Task,Duration (hour),Remark
  * media-search,1.0,wip: add types and wrapper functions for bing and duckduckgo image search
@@ -10,7 +10,7 @@ import { summary_file, log_sheet_file } from './config'
  * format-html-cli,0.2,feat: restore the casing for DOCTYPE formatted by prettier
  * ```
  *
- * Example Output Content:
+ * Example Output Content (to res/summary.csv):
  * ```
  * Task,Total Hour
  * media-search,1.5

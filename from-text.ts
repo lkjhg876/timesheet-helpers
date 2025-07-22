@@ -4,7 +4,7 @@ import { timeStamp } from 'console'
 import { writeCSV, writeFile } from './fs'
 
 /**
- * Example Input Content:
+ * Example Input Content (from ~/timesheet.txt):
  * ```
  * ---
  *
@@ -44,7 +44,7 @@ import { writeCSV, writeFile } from './fs'
  * ---
  * ```
  *
- * Example Output Content:
+ * Example Output Content (to res/draft.csv):
  * ```
  * Task,From,To,Duration (hour),Duration (minute),Cost,acc,Remark
  * media-search,2025-04-21 22:35:08,2025-04-22 00:20:23,1.75,105,105,105,wip: add types and wrapper functions for bing and duckduckgo image search
