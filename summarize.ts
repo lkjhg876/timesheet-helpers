@@ -1,6 +1,23 @@
 import { readCSV, writeCSV } from './fs'
 import { summary_file, log_sheet_file } from './config'
 
+/**
+ * Example Input Content:
+ * ```
+ * Task,Duration (hour),Remark
+ * media-search,1.0,wip: add types and wrapper functions for bing and duckduckgo image search
+ * media-search,0.5,feat: add a unified function to search image from multiple sources
+ * format-html-cli,0.2,feat: restore the casing for DOCTYPE formatted by prettier
+ * ```
+ *
+ * Example Output Content:
+ * ```
+ * Task,Total Hour
+ * media-search,1.5
+ * format-html-cli,0.2
+ * ```
+ */
+
 let counts: Record<string, number> = {}
 
 let rows = readCSV(log_sheet_file)

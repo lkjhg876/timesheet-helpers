@@ -4,7 +4,7 @@ import { timeStamp } from 'console'
 import { writeCSV, writeFile } from './fs'
 
 /**
- * e.g.
+ * Example Input Content:
  * ```
  * ---
  *
@@ -43,6 +43,15 @@ import { writeCSV, writeFile } from './fs'
  *
  * ---
  * ```
+ *
+ * Example Output Content:
+ * ```
+ * Task,From,To,Duration (hour),Duration (minute),Cost,acc,Remark
+ * media-search,2025-04-21 22:35:08,2025-04-22 00:20:23,1.75,105,105,105,wip: add types and wrapper functions for bing and duckduckgo image search
+ * format-html-cli,2025-04-25 02:50:06,2025-04-25 03:12:10,0.37,22,22,22,init: finish project setup based on format-html-cli
+ * ```
+ *
+ * Only the (Task, From, To, Remark) fields are filled, the rest of fields are left empty.
  */
 
 let text = readFileSync(text_file, 'utf-8').trim().replaceAll('\r', '')
