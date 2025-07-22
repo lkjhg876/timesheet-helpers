@@ -1,4 +1,7 @@
+import { mkdirSync } from 'fs'
 import { join } from 'path'
+
+mkdirSync('res', { recursive: true })
 
 export let log_sheet_file = 'res/log-sheet.csv'
 export let summary_file = 'res/summary.csv'
