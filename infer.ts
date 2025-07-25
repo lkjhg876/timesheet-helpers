@@ -140,44 +140,34 @@ for (let row of rows) {
   let taskScores: Record<string, number> = {}
   let totalScore = 0
 
+  // Calculate scores for each task associated with the words
   for (let word of words) {
-    let word_entry = word_entries[word]
+    let wordEntry = word_entries[word]
+    if (!wordEntry) continue
 
-    if (!word_entry) continue
-
-    // Calculate scores for each task associated with the word
-    for (let [taskName, occurrence] of Object.entries(word_entry.tasks)) {
-      if (!taskScores[taskName]) {
-        taskScores[taskName] = 0
-      }
-      taskScores[taskName] += occurrence // Increment score by occurrence
-      totalScore += occurrence // Increment total score
+    for (let [taskName, occurrence] of Object.entries(wordEntry.tasks)) {
+      taskScores[taskName] = (taskScores[taskName] || 0) + occurrence
+      totalScore += occurrence
     }
   }
 
-  // Adjust scores based on overall task occurrences
-  let taskProbabilities: Record<string, number> = {}
+  // Calculate total occurrences of all tasks
   let totalTaskOccurrences = Object.values(word_entries).reduce(
-    (acc, entry) => {
-      return acc + Object.values(entry.tasks).reduce((sum, occ) => sum + occ, 0)
-    },
+    (acc, entry) =>
+      acc + Object.values(entry.tasks).reduce((sum, occ) => sum + occ, 0),
     0
   )
 
+  // Adjust scores based on overall task occurrences
+  let taskProbabilities: Record<string, number> = {}
   for (let [taskName, score] of Object.entries(taskScores)) {
-    // Get total occurrences for the task
     let taskTotalOccurrences = Object.values(word_entries).reduce(
-      (sum, entry) => {
-        return sum + (entry.tasks[taskName] || 0)
-      },
+      (sum, entry) => sum + (entry.tasks[taskName] || 0),
       0
     )
 
-    // Inverse frequency adjustment
     let inverseFrequencyWeight =
       totalTaskOccurrences / (taskTotalOccurrences || 1)
-
-    // Calculate adjusted score
     taskProbabilities[taskName] = (score / totalScore) * inverseFrequencyWeight
   }
 
@@ -186,21 +176,16 @@ for (let row of rows) {
     (sum, prob) => sum + prob,
     0
   )
-
   if (totalProbability > 0) {
     for (let taskName in taskProbabilities) {
-      taskProbabilities[taskName] /= totalProbability // Normalize to sum to 1
+      taskProbabilities[taskName] /= totalProbability
     }
   }
 
   // Log tasks with their calculated probabilities
   console.log('Probable tasks for remark:', remark)
-
-  // Convert the taskProbabilities object to an array of [taskName, probability]
   let sortedTasks = Object.entries(taskProbabilities).sort(
-    ([taskA, probabilityA], [taskB, probabilityB]) => {
-      return probabilityB - probabilityA // Sort in descending order
-    }
+    ([taskA, probA], [taskB, probB]) => probB - probA
   )
 
   // Filter to show top 5 tasks or those with at least 5% probability
@@ -211,7 +196,7 @@ for (let row of rows) {
   // Log the filtered tasks
   if (filteredTasks.length > 0) {
     for (let [taskName, probability] of filteredTasks) {
-      console.log(`${taskName}: ${(probability * 100).toFixed(2)}%`) // Display as percentage
+      console.log(`${taskName}: ${(probability * 100).toFixed(2)}%`)
     }
   } else {
     console.log('No tasks meet the criteria.')
