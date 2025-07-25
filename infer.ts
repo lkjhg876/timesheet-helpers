@@ -134,15 +134,55 @@ for (let row of rows) {
   let task = row.Task || ''
   let remark = row.Remark || ''
 
-  if (task) continue
+  if (task) continue // Skip rows that already have a task
 
   let words = extract_words(remark)
+  let taskScores: Record<string, number> = {}
+  let totalScore = 0
 
   for (let word of words) {
     let word_entry = word_entries[word]
 
     if (!word_entry) continue
 
-    console.log('word_entry:', word_entry)
+    // Calculate scores for each task associated with the word
+    for (let [taskName, occurrence] of Object.entries(word_entry.tasks)) {
+      if (!taskScores[taskName]) {
+        taskScores[taskName] = 0
+      }
+      taskScores[taskName] += occurrence // Increment score by occurrence
+      totalScore += occurrence // Increment total score
+    }
   }
+
+  // Calculate probabilities
+  let taskProbabilities: Record<string, number> = {}
+  for (let [taskName, score] of Object.entries(taskScores)) {
+    taskProbabilities[taskName] = score / totalScore // Normalize score
+  }
+
+  // Log tasks with their calculated probabilities
+  console.log('Probable tasks for remark:', remark)
+
+  // Convert the taskProbabilities object to an array of [taskName, probability]
+  let sortedTasks = Object.entries(taskProbabilities).sort(
+    ([taskA, probabilityA], [taskB, probabilityB]) => {
+      return probabilityB - probabilityA // Sort in descending order
+    }
+  )
+
+  // Filter to show top 5 tasks or those with at least 5% probability
+  let filteredTasks = sortedTasks
+    .filter(([taskName, probability]) => probability >= 0.05)
+    .slice(0, 5)
+
+  // Log the filtered tasks
+  if (filteredTasks.length > 0) {
+    for (let [taskName, probability] of filteredTasks) {
+      console.log(`${taskName}: ${probability.toFixed(4)}`)
+    }
+  } else {
+    console.log('No tasks meet the criteria.')
+  }
+  console.log()
 }
