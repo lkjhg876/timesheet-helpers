@@ -155,10 +155,42 @@ for (let row of rows) {
     }
   }
 
-  // Calculate probabilities
+  // Adjust scores based on overall task occurrences
   let taskProbabilities: Record<string, number> = {}
+  let totalTaskOccurrences = Object.values(word_entries).reduce(
+    (acc, entry) => {
+      return acc + Object.values(entry.tasks).reduce((sum, occ) => sum + occ, 0)
+    },
+    0
+  )
+
   for (let [taskName, score] of Object.entries(taskScores)) {
-    taskProbabilities[taskName] = score / totalScore // Normalize score
+    // Get total occurrences for the task
+    let taskTotalOccurrences = Object.values(word_entries).reduce(
+      (sum, entry) => {
+        return sum + (entry.tasks[taskName] || 0)
+      },
+      0
+    )
+
+    // Inverse frequency adjustment
+    let inverseFrequencyWeight =
+      totalTaskOccurrences / (taskTotalOccurrences || 1)
+
+    // Calculate adjusted score
+    taskProbabilities[taskName] = (score / totalScore) * inverseFrequencyWeight
+  }
+
+  // Normalize probabilities to sum to 1
+  let totalProbability = Object.values(taskProbabilities).reduce(
+    (sum, prob) => sum + prob,
+    0
+  )
+
+  if (totalProbability > 0) {
+    for (let taskName in taskProbabilities) {
+      taskProbabilities[taskName] /= totalProbability // Normalize to sum to 1
+    }
   }
 
   // Log tasks with their calculated probabilities
@@ -179,7 +211,7 @@ for (let row of rows) {
   // Log the filtered tasks
   if (filteredTasks.length > 0) {
     for (let [taskName, probability] of filteredTasks) {
-      console.log(`${taskName}: ${probability.toFixed(4)}`)
+      console.log(`${taskName}: ${(probability * 100).toFixed(2)}%`) // Display as percentage
     }
   } else {
     console.log('No tasks meet the criteria.')
