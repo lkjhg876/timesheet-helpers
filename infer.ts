@@ -89,7 +89,7 @@ of
 to
 `)
 
-let symbols = '():-.,'
+let symbols = '()-.,'
 
 function extract_words(remark: string) {
   let words = remark.split(/\s+/)
