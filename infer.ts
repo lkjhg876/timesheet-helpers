@@ -86,6 +86,7 @@ not
 of
 on
 of
+to
 `)
 
 let symbols = '():-.,'
